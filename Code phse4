@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Weather Dashboard</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(to right, #4facfe, #00f2fe);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .weather-app {
+      background: white;
+      padding: 20px;
+      border-radius: 15px;
+      text-align: center;
+      width: 350px;
+      box-shadow: 0px 4px 15px rgba(0,0,0,0.2);
+    }
+
+    input {
+      padding: 10px;
+      width: 70%;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+    }
+
+    button {
+      padding: 10px 15px;
+      margin-top: 10px;
+      border: none;
+      background: #4facfe;
+      color: white;
+      font-weight: bold;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #00c6ff;
+    }
+
+    .weather-info {
+      margin-top: 20px;
+    }
+
+    .weather-info img {
+      width: 80px;
+    }
+
+    h2, h3 {
+      margin: 10px 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="weather-app">
+    <h2>🌍 Weather Dashboard</h2>
+    <input type="text" id="cityInput" placeholder="Enter city">
+    <br>
+    <button onclick="getWeather()">Get Weather</button>
+    <div class="weather-info" id="weatherInfo"></div>
+  </div>
+
+  <script>
+    async function getWeather() {
+      const city = document.getElementById("cityInput").value;
+      const apiKey = "YOUR_API_KEY"; // 🔑 Replace with your OpenWeatherMap API key
+      const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`;
+
+      try {
+        const response = await fetch(url);
+        if (!response.ok) {
+          throw new Error("City not found");
+        }
+        const data = await response.json();
+
+        document.getElementById("weatherInfo").innerHTML = `
+          <h3>${data.name}, ${data.sys.country}</h3>
+          <img src="https://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png" alt="Weather">
+          <h2>${data.main.temp}°C</h2>
+          <p>${data.weather[0].description}</p>
+          <p>Humidity: ${data.main.humidity}%</p>
+          <p>Wind: ${data.wind.speed} m/s</p>
+        `;
+      } catch (error) {
+        document.getElementById("weatherInfo").innerHTML = `<p style="color:red;">${error.message}</p>`;
+      }
+    }
+  </script>
+</body>
+</html>
